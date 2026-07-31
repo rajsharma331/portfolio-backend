@@ -3,7 +3,7 @@ import cors from "cors";
 import axios from "axios";
 import dotenv from "dotenv";
 import useragent from "express-useragent";
-import geoip from "geoip-lite";
+
 
 dotenv.config();
 
@@ -32,10 +32,21 @@ app.post("/visit", async (req, res) => {
       req.ip;
 
     // Geo Location
-    const geo = geoip.lookup(ip);
+    let country = "Unknown";
+let city = "Unknown";
+let region = "Unknown";
+let isp = "Unknown";
 
-    const country = geo?.country || "Unknown";
-    const city = geo?.city || "Unknown";
+try {
+  const geo = await axios.get(`https://ipapi.co/${ip}/json/`);
+
+  country = geo.data.country_name || "Unknown";
+  city = geo.data.city || "Unknown";
+  region = geo.data.region || "Unknown";
+  isp = geo.data.org || "Unknown";
+} catch (error) {
+  console.log("Geo lookup failed");
+}
 
     // Browser & Device
     const ua = req.useragent;
@@ -55,11 +66,12 @@ app.post("/visit", async (req, res) => {
       timeStyle: "medium",
     });
 
-    const message = `
+   const message = `
 🚀 New Portfolio Visitor
 
 🌍 Country: ${country}
 🏙 City: ${city}
+📍 Region: ${region}
 
 📱 Device: ${device}
 
@@ -69,6 +81,8 @@ app.post("/visit", async (req, res) => {
 📐 Screen: ${screen || "Unknown"}
 
 🗣 Language: ${language || "Unknown"}
+
+🌐 ISP: ${isp}
 
 🕒 Timezone: ${timezone || "Unknown"}
 
