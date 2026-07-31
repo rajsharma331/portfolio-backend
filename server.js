@@ -3,7 +3,7 @@ import cors from "cors";
 import axios from "axios";
 import dotenv from "dotenv";
 import useragent from "express-useragent";
-
+import prisma from "./config/prisma.js";
 
 dotenv.config();
 
@@ -89,7 +89,22 @@ try {
 🔗 Referrer: ${referrer || "Direct"}
 
 🕒 Time: ${time}
-`;
+`;await prisma.visitor.create({
+  data: {
+    ip,
+    country,
+    region,
+    city,
+    browser,
+    os,
+    device,
+    language,
+    timezone,
+    screen,
+    referrer,
+    isp,
+  },
+});
 
     await axios.post(
       `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
