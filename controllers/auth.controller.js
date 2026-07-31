@@ -196,3 +196,59 @@ export const changePassword = async (req, res) => {
   }
 
 };
+export const updateAdmin = async (req, res) => {
+  try {
+    const { email, currentPassword, newPassword } = req.body;
+
+    const admin = await prisma.admin.findUnique({
+      where: {
+        id: req.admin.id,
+      },
+    });
+
+    if (!admin) {
+      return res.status(404).json({
+        message: "Admin not found",
+      });
+    }
+
+    const match = await bcrypt.compare(
+      currentPassword,
+      admin.password
+    );
+
+    if (!match) {
+      return res.status(401).json({
+        message: "Current password incorrect",
+      });
+    }
+
+    const data = {};
+
+    if (email) {
+      data.email = email;
+    }
+
+    if (newPassword) {
+      data.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    await prisma.admin.update({
+      where: {
+        id: admin.id,
+      },
+      data,
+    });
+
+    res.json({
+      message: "Account updated successfully",
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
