@@ -13,11 +13,13 @@
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "axios": "^1.11.0",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "express-useragent": "^2.2.1",
     "geoip-lite": "^2.0.3",
+    "jsonwebtoken": "^9.0.3",
     "prisma": "^6.19.3"
   }
 }
