@@ -6,11 +6,7 @@ import {
   updateAdmin,
 } from "../controllers/auth.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
-import {
-  registerAdmin,
-  loginAdmin,
-  changePassword,
-} from "../controllers/auth.controller.js";
+
 
 
 const router = express.Router();
